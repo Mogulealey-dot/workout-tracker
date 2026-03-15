@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import styles from './LogWorkout.module.css'
 import {
   getTemplates,
@@ -33,7 +33,255 @@ function formatTime(s) {
   return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
 }
 
+function formatRestTime(s) {
+  const m = Math.floor(s / 60)
+  const sec = s % 60
+  return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
+}
+
+function playBeep(freq = 880, dur = 0.12) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)()
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.connect(gain); gain.connect(ctx.destination)
+    osc.frequency.value = freq
+    gain.gain.setValueAtTime(0.4, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur)
+    osc.start(); osc.stop(ctx.currentTime + dur)
+  } catch {}
+}
+
 const ALL_CATEGORIES = Object.keys(EXERCISES)
+
+// ─── Rep Timer Modal ──────────────────────────────────────────────────────────
+function RepTimerModal({ exerciseName, setNum, targetReps, onComplete, onClose }) {
+  const [tempo, setTempo] = useState(2)
+  const [currentRep, setCurrentRep] = useState(targetReps || 10)
+  const [running, setRunning] = useState(false)
+  const [started, setStarted] = useState(false)
+  const intervalRef = useRef(null)
+  const target = targetReps || 10
+
+  // Reset currentRep when target changes (shouldn't happen but guard)
+  useEffect(() => {
+    setCurrentRep(target)
+  }, [target])
+
+  const clearTick = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+  }
+
+  const handleStart = () => {
+    setRunning(true)
+    setStarted(true)
+    intervalRef.current = setInterval(() => {
+      setCurrentRep(prev => {
+        const next = prev - 1
+        if (next <= 0) {
+          clearInterval(intervalRef.current)
+          intervalRef.current = null
+          setRunning(false)
+          // play 3 beeps with slight delay between
+          playBeep(880, 0.12)
+          setTimeout(() => playBeep(880, 0.12), 180)
+          setTimeout(() => {
+            playBeep(1100, 0.2)
+            onComplete()
+          }, 360)
+          return 0
+        }
+        return next
+      })
+    }, tempo * 1000)
+  }
+
+  const handlePause = () => {
+    clearTick()
+    setRunning(false)
+  }
+
+  const handleReset = () => {
+    clearTick()
+    setRunning(false)
+    setStarted(false)
+    setCurrentRep(target)
+  }
+
+  useEffect(() => {
+    return () => clearTick()
+  }, [])
+
+  // When tempo changes and we are running, restart the interval
+  useEffect(() => {
+    if (running) {
+      clearTick()
+      intervalRef.current = setInterval(() => {
+        setCurrentRep(prev => {
+          const next = prev - 1
+          if (next <= 0) {
+            clearInterval(intervalRef.current)
+            intervalRef.current = null
+            setRunning(false)
+            playBeep(880, 0.12)
+            setTimeout(() => playBeep(880, 0.12), 180)
+            setTimeout(() => {
+              playBeep(1100, 0.2)
+              onComplete()
+            }, 360)
+            return 0
+          }
+          return next
+        })
+      }, tempo * 1000)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tempo])
+
+  const circumference = 2 * Math.PI * 52
+  const progress = target > 0 ? currentRep / target : 0
+
+  return (
+    <div className="modal-overlay modal-centered" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <span className="modal-title">{exerciseName} — Set {setNum}</span>
+          <button className="modal-close" onClick={onClose}>
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        {/* SVG ring */}
+        <div className={styles.repRingWrap}>
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="var(--border)" strokeWidth="6"/>
+            <circle
+              cx="60" cy="60" r="52"
+              fill="none"
+              stroke="var(--accent)"
+              strokeWidth="6"
+              strokeDasharray={`${circumference}`}
+              strokeDashoffset={`${circumference * (1 - progress)}`}
+              strokeLinecap="round"
+              transform="rotate(-90 60 60)"
+              style={{ transition: running ? 'none' : 'stroke-dashoffset 0.3s' }}
+            />
+          </svg>
+          <div className={styles.repRingCount}>{currentRep}</div>
+          <div className={styles.repRingLabel}>reps left</div>
+        </div>
+
+        {/* Tempo chips */}
+        <div className={styles.tempoRow}>
+          <span className={styles.tempoLabel}>Tempo</span>
+          {[1, 1.5, 2, 3].map(t => (
+            <button
+              key={t}
+              className={`${styles.tempoChip}${tempo === t ? ' ' + styles.tempoChipActive : ''}`}
+              onClick={() => setTempo(t)}
+              disabled={running}
+            >
+              {t}s
+            </button>
+          ))}
+        </div>
+
+        {/* Controls */}
+        <div className={styles.repTimerBtns}>
+          {!started || (!running && currentRep > 0) ? (
+            <button className="btn btn-primary" style={{ flex: 2 }} onClick={handleStart} disabled={currentRep === 0}>
+              {started && !running ? 'Resume' : 'Start'}
+            </button>
+          ) : running ? (
+            <button className="btn btn-secondary" style={{ flex: 2 }} onClick={handlePause}>
+              Pause
+            </button>
+          ) : null}
+          <button className="btn btn-ghost" style={{ flex: 1 }} onClick={handleReset}>
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Rest Timer Banner ────────────────────────────────────────────────────────
+const REST_OPTIONS = [30, 60, 90, 120]
+
+function RestTimerBanner({ onDismiss }) {
+  const [duration, setDuration] = useState(90)
+  const [remaining, setRemaining] = useState(90)
+  const intervalRef = useRef(null)
+  const durationRef = useRef(90)
+
+  const startTimer = useCallback((dur) => {
+    if (intervalRef.current) clearInterval(intervalRef.current)
+    setRemaining(dur)
+    durationRef.current = dur
+    intervalRef.current = setInterval(() => {
+      setRemaining(prev => {
+        if (prev <= 1) {
+          clearInterval(intervalRef.current)
+          intervalRef.current = null
+          playBeep(880, 0.15)
+          setTimeout(() => playBeep(1100, 0.2), 250)
+          setTimeout(onDismiss, 600)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+  }, [onDismiss])
+
+  useEffect(() => {
+    startTimer(90)
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [startTimer])
+
+  const handleSelectDuration = (d) => {
+    setDuration(d)
+    startTimer(d)
+  }
+
+  const progressPct = durationRef.current > 0 ? (remaining / durationRef.current) * 100 : 0
+
+  return (
+    <div className={styles.restBanner}>
+      <div className={styles.restBannerInner}>
+        <div className={styles.restBannerTop}>
+          <div className={styles.restBannerLeft}>
+            <span className={styles.restLabel}>Rest</span>
+            <span className={styles.restCountdown}>{formatRestTime(remaining)}</span>
+          </div>
+          <div className={styles.restDurationChips}>
+            {REST_OPTIONS.map(d => (
+              <button
+                key={d}
+                className={`${styles.restChip}${duration === d ? ' ' + styles.restChipActive : ''}`}
+                onClick={() => handleSelectDuration(d)}
+              >
+                {d}s
+              </button>
+            ))}
+          </div>
+          <button className={styles.restSkip} onClick={onDismiss}>Skip</button>
+        </div>
+        <div className={styles.restProgressTrack}>
+          <div
+            className={styles.restProgressBar}
+            style={{ width: `${progressPct}%`, transition: 'width 1s linear' }}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function LogWorkout({ onWorkoutSaved }) {
   const [phase, setPhase] = useState('start') // 'start' | 'active'
@@ -52,6 +300,15 @@ export default function LogWorkout({ onWorkoutSaved }) {
   const [templateName, setTemplateName] = useState('')
   const [workoutNotes, setWorkoutNotes] = useState('')
 
+  // Rep timer state
+  const [repTimerTarget, setRepTimerTarget] = useState(null)
+  // { exId, setId, exerciseName, setNum, targetReps }
+
+  // Rest timer state
+  const [showRestTimer, setShowRestTimer] = useState(false)
+  // Debounce: track last completed set id to avoid re-triggering
+  const lastCompletedRef = useRef(null)
+
   useEffect(() => {
     setSettings(getSettings())
     setTemplates(getTemplates())
@@ -69,6 +326,7 @@ export default function LogWorkout({ onWorkoutSaved }) {
         reps: s.reps,
         weight: s.weight,
         completed: false,
+        isWarmup: false,
       })),
     }))
     setExercises(exs)
@@ -91,7 +349,7 @@ export default function LogWorkout({ onWorkoutSaved }) {
         id: generateId(),
         name,
         category,
-        sets: [{ id: generateId(), reps: 10, weight: 0, completed: false }],
+        sets: [{ id: generateId(), reps: 10, weight: 0, completed: false, isWarmup: false }],
       },
     ])
     setShowExercisePicker(false)
@@ -111,7 +369,7 @@ export default function LogWorkout({ onWorkoutSaved }) {
         ...ex,
         sets: [
           ...ex.sets,
-          { id: generateId(), reps: lastSet?.reps || 10, weight: lastSet?.weight || 0, completed: false },
+          { id: generateId(), reps: lastSet?.reps || 10, weight: lastSet?.weight || 0, completed: false, isWarmup: false },
         ],
       }
     }))
@@ -140,7 +398,26 @@ export default function LogWorkout({ onWorkoutSaved }) {
       if (ex.id !== exId) return ex
       return {
         ...ex,
-        sets: ex.sets.map(s => s.id !== setId ? s : { ...s, completed: !s.completed }),
+        sets: ex.sets.map(s => {
+          if (s.id !== setId) return s
+          const newCompleted = !s.completed
+          // Trigger rest timer when marking complete (not warmup, not unchecking)
+          if (newCompleted && !s.isWarmup && lastCompletedRef.current !== setId) {
+            lastCompletedRef.current = setId
+            setShowRestTimer(true)
+          }
+          return { ...s, completed: newCompleted }
+        }),
+      }
+    }))
+  }
+
+  const toggleWarmup = (exId, setId) => {
+    setExercises(prev => prev.map(ex => {
+      if (ex.id !== exId) return ex
+      return {
+        ...ex,
+        sets: ex.sets.map(s => s.id !== setId ? s : { ...s, isWarmup: !s.isWarmup }),
       }
     }))
   }
@@ -155,7 +432,7 @@ export default function LogWorkout({ onWorkoutSaved }) {
       exercises: exercises.map(ex => ({
         name: ex.name,
         category: ex.category,
-        sets: ex.sets.map(s => ({ reps: s.reps, weight: s.weight, completed: s.completed })),
+        sets: ex.sets.map(s => ({ reps: s.reps, weight: s.weight, completed: s.completed, isWarmup: s.isWarmup || false })),
       })),
     }
     saveWorkout(workout)
@@ -312,6 +589,7 @@ export default function LogWorkout({ onWorkoutSaved }) {
                 {settings.unit === 'kg' ? 'KG' : 'LBS'}
               </span>
               <span style={{ flex: 1, textAlign: 'center' }}>REPS</span>
+              <span style={{ width: 28, textAlign: 'center' }}></span>
               <span style={{ width: 40, textAlign: 'center' }}>DONE</span>
               <span style={{ width: 24 }} />
             </div>
@@ -319,9 +597,25 @@ export default function LogWorkout({ onWorkoutSaved }) {
             {ex.sets.map((s, sIdx) => (
               <div
                 key={s.id}
-                className={`${styles.setRow}${s.completed ? ' ' + styles.setCompleted : ''}`}
+                className={[
+                  styles.setRow,
+                  s.completed ? styles.setCompleted : '',
+                  s.isWarmup ? styles.setWarmup : '',
+                ].filter(Boolean).join(' ')}
               >
-                <span className={styles.setNum}>{sIdx + 1}</span>
+                {/* Set number / warmup toggle */}
+                <button
+                  className={styles.setNumBtn}
+                  onClick={() => toggleWarmup(ex.id, s.id)}
+                  title={s.isWarmup ? 'Warmup set — click to make working set' : 'Working set — click to make warmup'}
+                >
+                  {s.isWarmup ? (
+                    <span className={styles.warmupW}>W</span>
+                  ) : (
+                    <span className={styles.setNum}>{sIdx + 1}</span>
+                  )}
+                </button>
+
                 <input
                   type="number"
                   className={styles.setInput}
@@ -339,10 +633,27 @@ export default function LogWorkout({ onWorkoutSaved }) {
                   min="0"
                   onChange={e => updateSet(ex.id, s.id, 'reps', e.target.value)}
                 />
+
+                {/* Rep timer play button */}
                 <button
-                  className={`${styles.checkBtn}${s.completed ? ' ' + styles.checkBtnDone : ''}`}
-                  onClick={() => toggleSetComplete(ex.id, s.id)}
-                  title="Mark complete"
+                  className={styles.playRepBtn}
+                  onClick={() => setRepTimerTarget({ exId: ex.id, setId: s.id, exerciseName: ex.name, setNum: sIdx + 1, targetReps: s.reps || 10 })}
+                  title="Start rep timer"
+                >
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                  </svg>
+                </button>
+
+                <button
+                  className={[
+                    styles.checkBtn,
+                    s.completed ? styles.checkBtnDone : '',
+                    s.isWarmup ? styles.checkBtnWarmup : '',
+                  ].filter(Boolean).join(' ')}
+                  onClick={() => !s.isWarmup && toggleSetComplete(ex.id, s.id)}
+                  title={s.isWarmup ? 'Warmup sets are not tracked' : 'Mark complete'}
+                  style={s.isWarmup ? { opacity: 0.35, cursor: 'default' } : {}}
                 >
                   <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="20 6 9 17 4 12" />
@@ -523,6 +834,28 @@ export default function LogWorkout({ onWorkoutSaved }) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Rep Timer Modal */}
+      {repTimerTarget && (
+        <RepTimerModal
+          exerciseName={repTimerTarget.exerciseName}
+          setNum={repTimerTarget.setNum}
+          targetReps={repTimerTarget.targetReps}
+          onComplete={() => {
+            toggleSetComplete(repTimerTarget.exId, repTimerTarget.setId)
+            setRepTimerTarget(null)
+          }}
+          onClose={() => setRepTimerTarget(null)}
+        />
+      )}
+
+      {/* Rest Timer Banner */}
+      {showRestTimer && (
+        <RestTimerBanner onDismiss={() => {
+          setShowRestTimer(false)
+          lastCompletedRef.current = null
+        }} />
       )}
     </div>
   )

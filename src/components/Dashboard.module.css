@@ -238,3 +238,139 @@
   font-weight: 700;
   color: var(--success);
 }
+
+/* ── Workout Calendar ─────────────────────────────────────────────────────── */
+.calendarWrap {
+  margin: 0 16px 8px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 12px 12px;
+  position: relative;
+}
+
+.calendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.calMonthLabel {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+
+.calNavBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.calNavBtn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.calGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.calDowLabel {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 2px 0 4px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.calCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 2px;
+  border-radius: 7px;
+  min-height: 34px;
+  cursor: default;
+  transition: background 0.1s;
+  position: relative;
+  gap: 2px;
+}
+
+.calCellHasWorkout {
+  cursor: pointer;
+}
+
+.calCellHasWorkout:hover {
+  background: var(--card-hover);
+}
+
+.calCellToday {
+  outline: 1.5px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.calCellActive {
+  background: var(--accent-dim);
+}
+
+.calDayNum {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1;
+}
+
+.calCellToday .calDayNum {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.calDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.calTooltip {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  margin-top: 8px;
+  z-index: 50;
+}
+
+.calTooltipDate {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 4px;
+}
+
+.calTooltipName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  padding: 2px 0;
+}

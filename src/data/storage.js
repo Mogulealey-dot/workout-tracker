@@ -385,7 +385,7 @@ export function computeMonthlyVolume(workouts, unit) {
     .filter(w => w.date >= monthStart)
     .reduce((total, w) => {
       const vol = w.exercises.reduce((et, ex) => {
-        return et + ex.sets.filter(s => s.completed).reduce((st, s) => st + (s.reps * s.weight), 0)
+        return et + ex.sets.filter(s => s.completed && !s.isWarmup).reduce((st, s) => st + (s.reps * s.weight), 0)
       }, 0)
       return total + vol
     }, 0)
@@ -395,7 +395,7 @@ export function computePersonalRecords(workouts) {
   const prs = {}
   for (const workout of workouts) {
     for (const exercise of workout.exercises) {
-      const maxWeight = Math.max(...exercise.sets.filter(s => s.completed && s.weight > 0).map(s => s.weight), 0)
+      const maxWeight = Math.max(...exercise.sets.filter(s => s.completed && !s.isWarmup && s.weight > 0).map(s => s.weight), 0)
       if (maxWeight > 0) {
         if (!prs[exercise.name] || maxWeight > prs[exercise.name].weight) {
           prs[exercise.name] = { weight: maxWeight, date: workout.date }

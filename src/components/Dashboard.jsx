@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import styles from './Dashboard.module.css'
 import {
   getWorkouts,
@@ -163,6 +163,10 @@ export default function Dashboard({ onNavigate }) {
         </div>
       )}
 
+      {/* Workout Calendar */}
+      <div className="section-title">Workout Calendar</div>
+      <WorkoutCalendar workouts={workouts} />
+
       {/* Top PRs */}
       {prCount > 0 && (
         <>
@@ -182,6 +186,139 @@ export default function Dashboard({ onNavigate }) {
       )}
 
       <div style={{ height: 12 }} />
+    </div>
+  )
+}
+
+// ─── Workout Calendar ────────────────────────────────────────────────────────
+function WorkoutCalendar({ workouts }) {
+  const today = new Date()
+  const [year, setYear] = useState(today.getFullYear())
+  const [month, setMonth] = useState(today.getMonth()) // 0-indexed
+  const [tooltip, setTooltip] = useState(null) // { day, names, x, y }
+  const tooltipRef = useRef(null)
+
+  // Build a map: dateStr -> [workout names]
+  const workoutMap = {}
+  for (const w of workouts) {
+    if (!workoutMap[w.date]) workoutMap[w.date] = []
+    workoutMap[w.date].push(w.name)
+  }
+
+  const todayStr = today.toISOString().split('T')[0]
+
+  const prevMonth = () => {
+    if (month === 0) { setMonth(11); setYear(y => y - 1) }
+    else setMonth(m => m - 1)
+    setTooltip(null)
+  }
+  const nextMonth = () => {
+    if (month === 11) { setMonth(0); setYear(y => y + 1) }
+    else setMonth(m => m + 1)
+    setTooltip(null)
+  }
+
+  // First day of month (0=Sun…6=Sat) — we want Mon-based grid
+  const firstDay = new Date(year, month, 1)
+  // Monday-based: 0=Mon … 6=Sun
+  const startDow = (firstDay.getDay() + 6) % 7
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+
+  const monthName = firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+
+  // Cells: leading blanks + day numbers
+  const cells = []
+  for (let i = 0; i < startDow; i++) cells.push(null)
+  for (let d = 1; d <= daysInMonth; d++) cells.push(d)
+
+  const handleDayClick = (day, e) => {
+    if (!day) return
+    const mm = String(month + 1).padStart(2, '0')
+    const dd = String(day).padStart(2, '0')
+    const dateStr = `${year}-${mm}-${dd}`
+    const names = workoutMap[dateStr]
+    if (!names) return
+    if (tooltip && tooltip.dateStr === dateStr) {
+      setTooltip(null)
+      return
+    }
+    const rect = e.currentTarget.getBoundingClientRect()
+    setTooltip({ dateStr, names, top: rect.bottom + 4, left: rect.left })
+  }
+
+  // Close tooltip on outside click
+  useEffect(() => {
+    if (!tooltip) return
+    const handler = (e) => {
+      if (tooltipRef.current && !tooltipRef.current.contains(e.target)) {
+        setTooltip(null)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [tooltip])
+
+  const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
+  return (
+    <div className={styles.calendarWrap}>
+      <div className={styles.calendarHeader}>
+        <button className={styles.calNavBtn} onClick={prevMonth} aria-label="Previous month">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
+        <span className={styles.calMonthLabel}>{monthName}</span>
+        <button className={styles.calNavBtn} onClick={nextMonth} aria-label="Next month">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+
+      <div className={styles.calGrid}>
+        {DOW.map(d => (
+          <div key={d} className={styles.calDowLabel}>{d}</div>
+        ))}
+        {cells.map((day, idx) => {
+          if (!day) return <div key={`blank-${idx}`} className={styles.calCell} />
+          const mm = String(month + 1).padStart(2, '0')
+          const dd = String(day).padStart(2, '0')
+          const dateStr = `${year}-${mm}-${dd}`
+          const hasWorkout = !!workoutMap[dateStr]
+          const isToday = dateStr === todayStr
+          const isActive = tooltip && tooltip.dateStr === dateStr
+          return (
+            <div
+              key={dateStr}
+              className={[
+                styles.calCell,
+                isToday ? styles.calCellToday : '',
+                hasWorkout ? styles.calCellHasWorkout : '',
+                isActive ? styles.calCellActive : '',
+              ].filter(Boolean).join(' ')}
+              onClick={e => handleDayClick(day, e)}
+            >
+              <span className={styles.calDayNum}>{day}</span>
+              {hasWorkout && <span className={styles.calDot} />}
+            </div>
+          )
+        })}
+      </div>
+
+      {tooltip && (
+        <div
+          ref={tooltipRef}
+          className={styles.calTooltip}
+        >
+          <div className={styles.calTooltipDate}>
+            {new Date(tooltip.dateStr + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+          </div>
+          {tooltip.names.map((name, i) => (
+            <div key={i} className={styles.calTooltipName}>{name}</div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

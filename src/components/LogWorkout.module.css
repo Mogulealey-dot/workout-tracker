@@ -487,3 +487,246 @@
   padding: 0;
   cursor: pointer;
 }
+
+/* ── Warm-up sets ─────────────────────────────────────────────────────────── */
+.setWarmup {
+  background: rgba(245, 166, 35, 0.05);
+}
+
+.setNumBtn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  border-radius: 6px;
+  transition: background 0.12s;
+}
+
+.setNumBtn:hover {
+  background: var(--card-hover);
+}
+
+.warmupW {
+  font-size: 13px;
+  font-weight: 700;
+  color: #f5a623;
+}
+
+.checkBtnWarmup {
+  opacity: 0.35;
+  cursor: default !important;
+}
+
+/* ── Rep timer play button ────────────────────────────────────────────────── */
+.playRepBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.12s;
+}
+
+.playRepBtn:hover {
+  background: rgba(124, 106, 247, 0.25);
+}
+
+/* ── Rep Timer Modal ─────────────────────────────────────────────────────── */
+.repRingWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 12px auto 16px;
+  width: 120px;
+  height: 120px;
+}
+
+.repRingCount {
+  position: absolute;
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
+  line-height: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -58%);
+}
+
+.repRingLabel {
+  position: absolute;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 60%);
+}
+
+.tempoRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.tempoLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-right: 2px;
+}
+
+.tempoChip {
+  padding: 5px 11px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.tempoChip:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.tempoChipActive {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.repTimerBtns {
+  display: flex;
+  gap: 8px;
+}
+
+/* ── Rest Timer Banner ───────────────────────────────────────────────────── */
+.restBanner {
+  position: fixed;
+  bottom: 72px;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  padding: 0 12px;
+  pointer-events: none;
+}
+
+.restBannerInner {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px 14px 10px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  pointer-events: all;
+}
+
+.restBannerTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.restBannerLeft {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.restLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.restCountdown {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.5px;
+}
+
+.restDurationChips {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.restDurationChips::-webkit-scrollbar { display: none; }
+
+.restChip {
+  padding: 3px 9px;
+  border-radius: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.12s;
+}
+
+.restChipActive {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.restSkip {
+  padding: 5px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.12s;
+}
+
+.restSkip:hover {
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.restProgressTrack {
+  margin-top: 8px;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.restProgressBar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+}
