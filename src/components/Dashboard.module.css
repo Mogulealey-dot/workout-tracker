@@ -1,0 +1,240 @@
+.dashboard {
+  padding-bottom: 8px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 24px 16px 16px;
+}
+
+.greeting {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+
+.subGreeting {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.streakBadge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  min-width: 72px;
+  text-align: center;
+}
+
+.streakFire {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.streakNum {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.streakLabel {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* Templates */
+.templatesRow {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.templatesRow::-webkit-scrollbar {
+  display: none;
+}
+
+.templateCard,
+.templateCardNew {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 12px;
+  min-width: 90px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.templateCard:hover {
+  border-color: var(--accent);
+  background: var(--accent-dim2);
+}
+
+.templateCardNew {
+  border-style: dashed;
+  border-color: var(--border-light);
+}
+
+.templateCardNew:hover {
+  border-color: var(--accent);
+  background: var(--accent-dim2);
+}
+
+.templateIcon {
+  font-size: 22px;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.templateName {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.templateMeta {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* Recent workouts */
+.recentList {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recentCard {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  gap: 8px;
+}
+
+.recentCard:hover {
+  border-color: var(--border-light);
+}
+
+.recentLeft {
+  flex: 1;
+  min-width: 0;
+}
+
+.recentName {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.recentDate {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.recentExercises {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.7;
+}
+
+.recentRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.recentStat {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.recentDuration {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.recentVol {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.viewAllBtn {
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 500;
+  padding: 8px 0;
+  text-align: right;
+  background: none;
+  border: none;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+/* PRs */
+.prList {
+  margin: 0 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.prRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.prRow:last-child {
+  border-bottom: none;
+}
+
+.prName {
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.prWeight {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--success);
+}

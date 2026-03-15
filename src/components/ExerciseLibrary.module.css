@@ -1,0 +1,90 @@
+.categoryScroll {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0 16px 10px;
+}
+
+.categoryScroll::-webkit-scrollbar { display: none; }
+
+.catBtn {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--card);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s;
+}
+
+.catBtnActive {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.exerciseListWrap {
+  padding: 0 16px 16px;
+}
+
+.catLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 14px 2px 6px;
+}
+
+.catCount {
+  background: var(--border-light);
+  color: var(--text-muted);
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 10px;
+}
+
+.exerciseItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  color: var(--text);
+}
+
+.exerciseItem:hover {
+  border-color: var(--border-light);
+}
+
+.exerciseName {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.customBadge {
+  font-size: 10px;
+  color: var(--accent);
+  background: var(--accent-dim);
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-weight: 500;
+  margin-top: 3px;
+  display: inline-block;
+}

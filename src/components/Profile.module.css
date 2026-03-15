@@ -1,0 +1,234 @@
+.latestCard {
+  margin: 0 16px 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.latestRow {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.latestStat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.latestVal {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+.latestUnit {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.latestLabel {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.weightChange {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.weightDown {
+  color: var(--success);
+  background: var(--success-dim);
+}
+
+.weightUp {
+  color: var(--danger);
+  background: var(--danger-dim);
+}
+
+.latestDate {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Chart */
+.chartCard {
+  margin: 0 16px 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.chartCardTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 12px 16px 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.chartWrap {
+  padding: 4px 8px 8px;
+}
+
+/* Add form */
+.addForm {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.addFormTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+
+.formRow {
+  display: flex;
+  gap: 10px;
+}
+
+/* Stats history list */
+.statsList {
+  margin: 0 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.statRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.statRow:last-child {
+  border-bottom: none;
+}
+
+.statRowLeft {
+  flex: 1;
+  min-width: 0;
+}
+
+.statRowDate {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.statRowNotes {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.statRowRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.statRowWeight {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--success);
+}
+
+.statRowBf {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Settings */
+.settingsCard {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.settingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+}
+
+.settingInfo {
+  flex: 1;
+}
+
+.settingLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.settingDesc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* About */
+.aboutContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0 4px;
+  text-align: center;
+}
+
+.aboutLogo {
+  font-size: 40px;
+}
+
+.aboutName {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.aboutDesc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+.aboutVersion {
+  font-size: 11px;
+  color: var(--text-muted);
+  opacity: 0.6;
+}

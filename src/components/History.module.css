@@ -1,0 +1,177 @@
+.historyList {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 12px;
+}
+
+.dateLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 12px 4px 6px;
+}
+
+.workoutCard {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.workoutHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px;
+  cursor: pointer;
+  gap: 8px;
+}
+
+.workoutHeader:hover {
+  background: var(--card-hover);
+}
+
+.workoutLeft {
+  flex: 1;
+  min-width: 0;
+}
+
+.workoutName {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.workoutMeta {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+.workoutActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.chevron {
+  color: var(--text-muted);
+  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+/* Workout detail */
+.workoutDetail {
+  border-top: 1px solid var(--border);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notesRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.notesIcon {
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+.notesText {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.exDetail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.exDetailHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.exDetailName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.exDetailCat {
+  font-size: 10px;
+  color: var(--accent);
+  background: var(--accent-dim);
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.setsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.setChip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px 10px;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+  min-width: 64px;
+}
+
+.setChipDone {
+  border-color: rgba(52, 201, 114, 0.3);
+  background: rgba(52, 201, 114, 0.05);
+}
+
+.setChipDone span {
+  color: var(--text);
+}
+
+.setChipNum {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-muted);
+  opacity: 0.6;
+  margin-bottom: 2px;
+}
+
+/* Delete modal */
+.deleteModal {
+  text-align: center;
+  padding: 8px;
+}
+
+.deleteIcon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
