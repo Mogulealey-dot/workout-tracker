@@ -6,6 +6,8 @@ import LogWorkout from './components/LogWorkout'
 import History from './components/History'
 import Progress from './components/Progress'
 import Profile from './components/Profile'
+import Toast from './components/Toast'
+import { useToast } from './hooks/useToast'
 
 initSampleData()
 
@@ -57,6 +59,7 @@ const TABS = [
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [refreshKey, setRefreshKey] = useState(0)
+  const { toasts, show: showToast, remove: removeToast } = useToast()
 
   const onWorkoutSaved = () => {
     setRefreshKey(k => k + 1)
@@ -68,13 +71,13 @@ export default function App() {
       case 'dashboard':
         return <Dashboard key={refreshKey} onNavigate={setActiveTab} />
       case 'log':
-        return <LogWorkout onWorkoutSaved={onWorkoutSaved} />
+        return <LogWorkout onWorkoutSaved={onWorkoutSaved} showToast={showToast} />
       case 'history':
         return <History key={refreshKey} />
       case 'progress':
         return <Progress key={refreshKey} />
       case 'profile':
-        return <Profile key={refreshKey} />
+        return <Profile key={refreshKey} showToast={showToast} />
       default:
         return null
     }
@@ -98,6 +101,7 @@ export default function App() {
           </button>
         ))}
       </nav>
+      <Toast toasts={toasts} onRemove={removeToast} />
     </div>
   )
 }
